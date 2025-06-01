@@ -11,7 +11,7 @@ const Footer = () => (
   }}>
     <Container maxWidth="sm">
       <Typography variant="body1">
-        Task Management App
+        Task Management
       </Typography>
       <Typography variant="body2" color="text.secondary">
         {'© '}

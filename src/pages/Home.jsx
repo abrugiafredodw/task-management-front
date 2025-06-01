@@ -1,7 +1,7 @@
 import { Box, Button, Typography, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
-import taskBg from '../assets/task-management-logo.png'; // Usa tu imagen de tareas aquí
+import taskBg from '../assets/task-management-sf.png'; // Usa tu imagen de tareas aquí
 
 const welcomeText = '¡Bienvenido a tu gestor de tareas!';
 
@@ -39,9 +39,9 @@ const Home = () => {
                     height: '100%',
                     backgroundImage: `url(${taskBg})`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'cover',
+                    // backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    opacity: 0.8,
+                    opacity: 0.7,
                     zIndex: 0,
                 }}
             />
