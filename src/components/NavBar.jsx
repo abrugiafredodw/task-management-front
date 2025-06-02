@@ -2,7 +2,6 @@ import { AppBar, Box, Container, IconButton, Menu, MenuItem, Toolbar, Typography
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react";
 import logo from '../assets/task-management-logo.png'
-import avatarimg from '../assets/avatar.jpg'
 import { NavLink } from "react-router-dom";
 
 const pages = [{name:"Task",to:'/task'}];
@@ -109,7 +108,7 @@ const NavBar = () => {
                 to={page.to}
                 key={page.name}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: 'white', display: 'block',fontSize: '21px'}}
               >
                 {page.name}
               </Button>
@@ -118,7 +117,7 @@ const NavBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={avatarimg} />
+                <Avatar {...stringAvatar('Ariel Brugiafredo')} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -152,3 +151,33 @@ const NavBar = () => {
 };
 
 export { NavBar };
+
+
+function stringToColor(string) {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+  };
+}

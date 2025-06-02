@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Home } from '../pages/Home'
 import { Layout } from "../components/Layout"
 import { TaskManagement } from "../pages/TaskManagement"
+import { Login } from "../pages/Login"
+import { Register } from "../pages/Register"
+import { PaginaNoEncontrada } from "../pages/PaginaNoEncontrada"
 
 
 const RouterApp = () => {
@@ -11,10 +14,10 @@ const RouterApp = () => {
             <Layout>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<h2>Pagina login</h2>} />
-                    <Route path="/register" element={<h2>Pagina register</h2>} />
+                    <Route path="/login" element={<Login/>} />
+                    <Route path="/register" element={<Register/>} />
                     <Route path="/task" element={<TaskManagement/>} />
-                    <Route path="*" element={<h2>No se encontro la pagina</h2>} />
+                    <Route path="*" element={<PaginaNoEncontrada/>} />
                 </Routes>
             </Layout>
         </BrowserRouter>

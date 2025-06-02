@@ -26,7 +26,7 @@ const Home = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                overflow: 'hidden',
+                overflow: 'hidden'
             }}
         >
             {/* Fondo con menor opacidad */}
@@ -66,7 +66,7 @@ const Home = () => {
                         </Button>
                     </Link>
                     <Link to="/register">
-                        <Button variant="outlined" color="primary" size="large">
+                        <Button variant="contained" color="secondary" size="large">
                             Registrarse
                         </Button>
                     </Link>
