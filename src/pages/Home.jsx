@@ -1,12 +1,14 @@
 import { Box, Button, Typography, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
+import { useAuth } from '../context/authContext';
 import taskBg from '../assets/task-management-sf.png'; // Usa tu imagen de tareas aquí
 
 const welcomeText = '¡Bienvenido a tu gestor de tareas!';
 
 const Home = () => {
     const [displayedText, setDisplayedText] = useState('');
+    const { token } = useAuth();
 
     useEffect(() => {
         let i = 0;
@@ -59,18 +61,28 @@ const Home = () => {
                     {displayedText}
                     <span style={{ color: '#1976d2', fontWeight: 900 }}>|</span>
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
-                    <Link to="/login">
-                        <Button variant="contained" color="primary" size="large">
-                            Iniciar sesión
-                        </Button>
-                    </Link>
-                    <Link to="/register">
-                        <Button variant="contained" color="secondary" size="large">
-                            Registrarse
-                        </Button>
-                    </Link>
-                </Stack>
+                {!token ? (
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+                      <Link to="/login">
+                          <Button variant="contained" color="primary" size="large">
+                              Iniciar sesión
+                          </Button>
+                      </Link>
+                      <Link to="/register">
+                          <Button variant="contained" color="secondary" size="large">
+                              Registrarse
+                          </Button>
+                      </Link>
+                  </Stack>
+                ) : (
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+                      <Link to="/task">
+                          <Button variant="contained" color="primary" size="large">
+                              Ir a Task Management
+                          </Button>
+                      </Link>
+                  </Stack>
+                )}
             </Box>
         </Box>
     );

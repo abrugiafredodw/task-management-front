@@ -3,13 +3,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react";
 import logo from '../assets/task-management-logo.png'
 import { NavLink } from "react-router-dom";
+import { useAuth } from '../context/authContext';
 
 const pages = [{name:"Task",to:'/task'}];
-const settings = ["Editar", "Salir"];
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const { token, user, logout } = useAuth();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -103,44 +104,42 @@ const NavBar = () => {
             <img src={logo} alt="Task Management Logo" style={{ height: 50, marginRight: 2 }} />
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {token && pages.map((page) => (
               <Button LinkComponent={NavLink}
                 to={page.to}
                 key={page.name}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block',fontSize: '21px'}}
-              >
+                sx={{ my: 2, color: 'white', display: 'block',fontSize: '21px'}}>
                 {page.name}
               </Button>
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar {...stringAvatar('Ariel Brugiafredo')} />
-              </IconButton>
-            </Tooltip>
+            {token ? (
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar {...stringAvatar(user?.nombre + ' ' + user?.apellido)} />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <>
+                <Button component={NavLink} to="/login" color="inherit">Login</Button>
+                <Button component={NavLink} to="/register" color="inherit">Register</Button>
+              </>
+            )}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
               keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={() => { logout(); handleCloseUserMenu(); }}>
+                <Typography sx={{ textAlign: 'center' }}>Salir</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

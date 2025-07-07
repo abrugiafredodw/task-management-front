@@ -1,23 +1,8 @@
-import { useState } from 'react';
-import { Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material';
+import { useRegister } from '../hooks/useRegister';
 
 const Register = () => {
-  const [form, setForm] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    password: ''
-  });
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Aquí iría la lógica de registro
-    console.log(form);
-  };
+    const { form, error, handleChange, handleSubmit } = useRegister();
 
   return (
     <Box maxWidth={400} mx="auto" mt={8}>
@@ -25,6 +10,7 @@ const Register = () => {
         <Typography variant="h5" align="center" gutterBottom>
           Registro de Usuario
         </Typography>
+        {error && <Alert severity="error">{error}</Alert>}
         <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
           <TextField
             label="Nombre"
@@ -56,6 +42,15 @@ const Register = () => {
             name="password"
             type="password"
             value={form.password}
+            onChange={handleChange}
+            required
+            fullWidth
+          />
+          <TextField
+            label="Repetir contraseña"
+            name="repeatPassword"
+            type="password"
+            value={form.repeatPassword}
             onChange={handleChange}
             required
             fullWidth
