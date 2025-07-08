@@ -1,11 +1,8 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../context/authContext";
-import { obtenerTareas,eliminarTarea,actualizarTarea } from "../services/taskService";
+import { useState, useEffect, useRef } from "react";
+import { obtenerTareas,eliminarTarea,actualizarTarea, crearTarea } from "../services/taskService";
 
 const useTasks = () => {
   const [tasks, setTasks] = useState([]);
-
-  const [input, setInput] = useState("");
 
   const [isListening, setIsListening] = useState(false);
 
@@ -13,38 +10,70 @@ const useTasks = () => {
 
   const recognitionRef = useRef(null);
 
-  const { token } = useAuth();
+ 
 
-  const handleAddTask = (e) => {
-    e.preventDefault();
-    if (input.trim() === "") return;
-    setTasks([...tasks, { id: Date.now(), text: input, completed: false }]);
-    setInput("");
-  };
+  useEffect(() => {  
+    fetchTasks();
+  }, []);
 
-  useEffect(() => {
     const fetchTasks = async () => {
-      setLoader;
+      setLoader(true);
       try {
         const response=await obtenerTareas();
-        setTasks(response.tareas||[]);
+        setTasks(response.tareas);
       } catch (error) {
         console.error("Error fetching tasks:", error);
-        setTasks([]);
       }finally{
         setLoader(false);
       }
     };
 
-    fetchTasks();
-  }, [token]);
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "es-AR";
+    recognition.interimResults = false;
+    recognition.continuous = true;
+    recognition.onresult = (event) => {
+      const transcript = event.results[event.resultIndex][0].transcript.trim();
+      addTask(transcript.charAt(0).toUpperCase() + transcript.slice(1) + '.');
+    };
+    recognitionRef.current = recognition; 
+  }, []);
 
-  const handleToggleComplete = async (id, completed) => {
+   const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current.stop()
+    } else {
+      recognitionRef.current.start()
+    }
+    setIsListening(!isListening)
+  }
+
+   const addTask = async (text) => {
+    if (text.trim() === "") return;
+    const newTask = {
+      text: text,
+      completed: false,
+    };
     try {
-      const data = await actualizarTarea(id, completed);
+      const data = await crearTarea(newTask);
+      setTasks(prevTasks => [...prevTasks, data.tarea]);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  };
+
+  const handleToggleComplete = async (id, completed,text) => {
+    try {
+       const editTask = {
+        text: text,
+        completed: completed ? false : true,
+       };
+      const data = await actualizarTarea(id, editTask);
       setTasks(
         tasks.map((task) =>
-          task.id === id ? data : task
+          task._id === id ? data.tarea : task
         )
       );
     } catch (error) {
@@ -55,7 +84,7 @@ const useTasks = () => {
   const handleDeleteTask = async (id) => {
     try {
       await eliminarTarea(id);
-      setTasks(tasks.filter((task) => task.id !== id));
+      setTasks(tasks.filter((task) => task._id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -63,10 +92,9 @@ const useTasks = () => {
 
   return {
     tasks,
-    input,
     loader,
-    setInput,
-    handleAddTask,
+    isListening,
+    toggleListening,
     handleToggleComplete,
     handleDeleteTask,
   };

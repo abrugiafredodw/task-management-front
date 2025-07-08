@@ -9,6 +9,7 @@ import {
   IconButton,
   Typography,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTasks } from "../hooks/useTask";
@@ -16,12 +17,21 @@ import { useTasks } from "../hooks/useTask";
 const TaskManagement = () => {
     const {
         tasks,
-        input,
-        setInput,
-        handleAddTask,
+        loader,
+        toggleListening,
+        isListening,
         handleToggleComplete,
         handleDeleteTask
     } = useTasks()
+
+  if (loader) {
+    return (
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="60vh">
+        <CircularProgress color="secondary" />
+        <Typography variant="h6" mt={2}>Cargando...</Typography>
+      </Box>
+    );
+  }
  
   return (
     <Box maxWidth={500} mx="auto" mt={5}>
@@ -29,22 +39,12 @@ const TaskManagement = () => {
         Gestor de Tareas
       </Typography>
       <Box
-        component="form"
-        onSubmit={handleAddTask}
+        component="div"
         display="flex"
         gap={2}
         mb={3}
       >
-        <TextField
-          label="Nueva tarea"
-          variant="outlined"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          fullWidth
-        />
-        <Button type="submit" variant="contained" color="secondary">
-          Agregar
-        </Button>
+      <Button  variant="contained" color="secondary" onClick={toggleListening}>{isListening ? "Grabando..." : "Grabar"}</Button>
       </Box>
       <Paper elevation={3}>
         <List
@@ -62,13 +62,13 @@ const TaskManagement = () => {
           )}
           {tasks.map((task) => (
             <ListItem
-              key={task.id}
+              key={task._id}
               divider
               secondaryAction={
                 <IconButton
                   edge="end"
                   aria-label="delete"
-                  onClick={() => handleDeleteTask(task.id)}
+                  onClick={() => handleDeleteTask(task._id)}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -76,7 +76,7 @@ const TaskManagement = () => {
             >
               <Checkbox
                 checked={task.completed}
-                onChange={() => handleToggleComplete(task.id)}
+                onChange={() => handleToggleComplete(task._id,task.completed,task.text)}
                 color="primary"
               />
               <ListItemText
