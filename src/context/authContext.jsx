@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('token') || '');
-    const [user, setUser] = useState(() => {
+  const [user, setUser] = useState(() => {
     const savedToken = localStorage.getItem("token")
     return savedToken ? jwtDecode(savedToken) : null
   })
@@ -15,7 +15,24 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
     } else {
       localStorage.removeItem('token');
+      setUser(null);
     }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+          logout();
+           window.location.href = "/";
+        }
+      } catch (e) {
+        logout();
+         window.location.href = "/";
+      }
+    }
+    // eslint-disable-next-line
   }, [token]);
 
   const login = (newToken) => {

@@ -8,6 +8,8 @@ const useTasks = () => {
 
   const [loader, setLoader] = useState(false);
 
+  const [error, setError] = useState('');
+
   const recognitionRef = useRef(null);
 
  
@@ -23,6 +25,7 @@ const useTasks = () => {
         setTasks(response.tareas);
       } catch (error) {
         console.error("Error fetching tasks:", error);
+        setError("Error al cargar las tareas. Por favor, inténtalo de nuevo más tarde.");
       }finally{
         setLoader(false);
       }
@@ -61,6 +64,7 @@ const useTasks = () => {
       setTasks(prevTasks => [...prevTasks, data.tarea]);
     } catch (error) {
       console.error("Error adding task:", error);
+      setError("Error al agregar la tarea. Por favor, inténtalo de nuevo más tarde.");
     }
   };
 
@@ -78,6 +82,7 @@ const useTasks = () => {
       );
     } catch (error) {
       console.error("Error updating task:", error);
+      setError("Error al actualizar la tarea. Por favor, inténtalo de nuevo más tarde.");
     }
   };
 
@@ -87,6 +92,7 @@ const useTasks = () => {
       setTasks(tasks.filter((task) => task._id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
+      setError("Error al eliminar la tarea. Por favor, inténtalo de nuevo más tarde.");
     }
   };
 
@@ -94,6 +100,7 @@ const useTasks = () => {
     tasks,
     loader,
     isListening,
+    error,
     toggleListening,
     handleToggleComplete,
     handleDeleteTask,

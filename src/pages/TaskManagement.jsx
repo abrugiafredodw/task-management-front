@@ -10,6 +10,7 @@ import {
   Typography,
   Paper,
   CircularProgress,
+  Alert,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTasks } from "../hooks/useTask";
@@ -20,6 +21,7 @@ const TaskManagement = () => {
         loader,
         toggleListening,
         isListening,
+        error,
         handleToggleComplete,
         handleDeleteTask
     } = useTasks()
@@ -35,6 +37,11 @@ const TaskManagement = () => {
  
   return (
     <Box maxWidth={500} mx="auto" mt={5}>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
       <Typography variant="h4" align="center" gutterBottom>
         Gestor de Tareas
       </Typography>

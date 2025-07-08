@@ -17,7 +17,7 @@ const Login = () => {
         <Typography variant="h5" align="center" gutterBottom>
           Iniciar sesión
         </Typography>
-        {error && <Alert severity="error" style={{ marginBottom: '16px' }}>{error}</Alert>}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
           <TextField
             label="Correo electrónico"
